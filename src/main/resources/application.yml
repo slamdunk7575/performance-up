@@ -14,3 +14,7 @@ spring:
     url: jdbc:mysql://localhost:3306/performance?createDatabaseIfNotExist=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: root
     password: 1234
+  data:
+    redis:
+      host: localhost
+      port: 6379
