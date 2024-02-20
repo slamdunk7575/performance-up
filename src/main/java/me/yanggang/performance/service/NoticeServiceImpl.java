@@ -30,7 +30,11 @@ public class NoticeServiceImpl implements NoticeService {
         List<Notice> notices = noticeRepository.findAll();
 
         List<NoticeDto> noticeDtoList = notices.stream()
-                .map(doc -> NoticeDto.builder().build())
+                .map(doc -> NoticeDto.builder()
+                        .title(doc.getTitle())
+                        .content(doc.getContent())
+                        .writer(doc.getWriter())
+                        .build())
                 .collect(Collectors.toList());
 
         return noticeDtoList;
