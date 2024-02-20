@@ -38,9 +38,10 @@ public class Notice {
     private LocalDateTime updateDate;
 
     @Builder
-    public Notice(String title, String content, String writer) {
+    public Notice(String title, String content, String writer, LocalDateTime createDate) {
         this.title = title;
         this.content = content;
         this.writer = writer;
+        this.createDate = createDate;
     }
 }
