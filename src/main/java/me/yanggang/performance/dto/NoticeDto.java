@@ -10,8 +10,6 @@ public class NoticeDto {
     private String title;
     private String content;
     private String writer;
-    private String createDate;
-    private String updateDate;
 
     @Builder
     public NoticeDto(String title, String content, String writer) {

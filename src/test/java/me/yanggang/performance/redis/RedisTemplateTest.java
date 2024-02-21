@@ -20,7 +20,7 @@ public class RedisTemplateTest {
     void set_key_get_value_test() {
         // given
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        String key = "test-key";
+        String key = "test_key";
 
         // when
         valueOperations.set(key, "hello");

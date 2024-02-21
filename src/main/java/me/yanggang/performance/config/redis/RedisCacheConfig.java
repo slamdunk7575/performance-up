@@ -1,5 +1,9 @@
 package me.yanggang.performance.config.redis;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -31,10 +35,9 @@ public class RedisCacheConfig {
                         RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer())
                 )
                 .serializeValuesWith(
-                        RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())
+                        RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer(objectMapper()))
                 );
     }
-
 
     /**
      * Cache Name 별로 설정하고 싶다면 RedisCacheManagerBuilderCustomizer 를 사용할 수 있음
@@ -42,10 +45,11 @@ public class RedisCacheConfig {
     @Bean
     public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
         Map<String, RedisCacheConfiguration> cacheConfigurationMap = new HashMap<>();
+
         Arrays.stream(CacheEnum.values()).forEach(cacheTypeEnum -> {
-            cacheConfigurationMap.put("test-" + cacheTypeEnum.getCacheName(),
+            cacheConfigurationMap.put("test_" + cacheTypeEnum.getCacheName(),
                     redisCacheDefaultConfiguration()
-                            .computePrefixWith(cacheName -> "test-" + cacheName)
+                            .computePrefixWith(cacheName -> "test_" + cacheName)
                             .entryTtl(Duration.ofSeconds(cacheTypeEnum.getExpireSecond()))
             );
         });
@@ -60,7 +64,15 @@ public class RedisCacheConfig {
                         RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer())
                 )
                 .serializeValuesWith(
-                        RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())
+                        RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer(objectMapper()))
                 );
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.registerModules(new JavaTimeModule(), new Jdk8Module());
+        return mapper;
     }
 }
